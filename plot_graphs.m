@@ -1,10 +1,28 @@
-function [ output_args ] = plot_graphs( x1,y1,z1,x2,y2,z2 )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
-plot(x1,y1,z1)
-hold on
-plot(x2,y2,z2)
+function [ output_args ] = plot_graphs( datasets )
+
+datasets_names = fieldnames(datasets);
+
+datasets_choices = cat(1, ['All'], datasets_names);
+dataset_choice_i = menu('Choose a dataset', datasets_choices);
+
+for i = 1:length(datasets_names)
+    dataset_name = datasets_names{i};
+    if (dataset_choice_i > 1 && i ~= dataset_choice_i)
+        continue;
+    end
+    dataset_values = datasets.(dataset_name);
+    plot3(dataset_values.x, dataset_values.y, dataset_values.z);
+    if (dataset_choice_i > 1)
+        title(dataset_name);
+    else
+        title('All');
+    end
+    rotate3d on
+    hold on
+end
 hold off
+
+return;
 
 choice = menu('Choose a window function','Bartlett','Blackman','Boxcar','Chebyshev','Hamming','Hann','Kaiser','Taylor','Triang');
 switch choice
@@ -17,6 +35,5 @@ switch choice
     case 'Kaiser'
     case 'Taylor'
     case 'Triang'
-    
 end
 
