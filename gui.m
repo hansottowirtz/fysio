@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 28-Nov-2017 14:27:04
+% Last Modified by GUIDE v2.5 05-Dec-2017 15:37:13
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,7 +78,10 @@ function load_button_Callback(hObject, eventdata, handles)
 % hObject    handle to load_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-load_excel();
+raw = load_excel();
+[~, ~, ds] = parse_excel(raw);
+values = general_values();
+plot_graphs(ds, values.window_function, handles);
 
 
 % --- Executes on button press in save_button.
@@ -115,3 +118,11 @@ function frequency_slider_CreateFcn(hObject, eventdata, handles)
 if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
+
+
+% --- Executes on button press in window_button.
+function window_button_Callback(hObject, eventdata, handles)
+% hObject    handle to window_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+general_values().window_function = choose_window_function();
