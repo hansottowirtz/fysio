@@ -43,7 +43,6 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before gui is made visible.
 function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -78,15 +77,17 @@ function load_button_Callback(hObject, eventdata, handles)
 % hObject    handle to load_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-raw = load_excel();
+[ raw, filename ] = load_excel();
 [~, ~, ds] = parse_excel(raw);
 values = general_values();
 values.datasets = ds;
 values.handles = handles;
 
 window_function = values.window_function;
-plot_graphs(ds, window_function, handles);
+[plotted_datasets] = plot_graphs(ds, window_function, handles);
 
+set(handles.file_text, 'String', filename);
+set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ", "));
 
 % --- Executes on button press in save_button.
 function save_button_Callback(hObject, eventdata, handles)
