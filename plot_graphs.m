@@ -17,12 +17,21 @@ function [ plotted_datasets ] = plot_graphs( datasets, window_function, handles 
 
         plot(handles.axes1, dataset_values.n, dataset_values.x);
         title(handles.axes1, 'X');
+        
+        semilogx(handles.axes4, dataset_values.n, log(fft(real(dataset_values.x))));
+        title(handles.axes4,'fft X');
 
         plot(handles.axes2, dataset_values.n, dataset_values.y);
         title(handles.axes2, 'Y');
+        
+        semilogx(handles.axes5, dataset_values.n, log(fft(real(dataset_values.y))));
+        title(handles.axes5,'fft Y');
 
         plot(handles.axes3, dataset_values.n, dataset_values.z);
         title(handles.axes3, 'Z');
+        
+        semilogx(handles.axes6, dataset_values.n, log(fft(real(dataset_values.z))));
+        title(handles.axes6,'fft Z');
         
         hold on;
 
@@ -31,7 +40,7 @@ function [ plotted_datasets ] = plot_graphs( datasets, window_function, handles 
 %         else
 %             title('All');
 %         end
-%         hold on
+         hold on
     end
-%     hold off
+     hold off
 end

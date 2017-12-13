@@ -87,7 +87,7 @@ window_function = values.window_function;
 [plotted_datasets] = plot_graphs(ds, window_function, handles);
 
 set(handles.file_text, 'String', filename);
-set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ", "));
+set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ', '));
 
 % --- Executes on button press in save_button.
 function save_button_Callback(hObject, eventdata, handles)
