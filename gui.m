@@ -81,7 +81,11 @@ function load_button_Callback(hObject, eventdata, handles)
 raw = load_excel();
 [~, ~, ds] = parse_excel(raw);
 values = general_values();
-plot_graphs(ds, values.window_function, handles);
+values.datasets = ds;
+values.handles = handles;
+
+window_function = values.window_function;
+plot_graphs(ds, window_function, handles);
 
 
 % --- Executes on button press in save_button.
@@ -125,4 +129,5 @@ function window_button_Callback(hObject, eventdata, handles)
 % hObject    handle to window_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-general_values().window_function = choose_window_function();
+values = general_values();
+values.window_function = choose_window_function();

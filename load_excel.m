@@ -1,4 +1,4 @@
-function [ raw ] = load_excel( input_args )
+function [ raw ] = load_excel()
     [filename,pathname] = uigetfile('*.xlsx');
     raw = read_excel(pathname, filename);
 end

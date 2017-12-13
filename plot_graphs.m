@@ -13,13 +13,13 @@ function [ ] = plot_graphs( datasets, window_function, handles )
         dataset_values = datasets.(dataset_name);
 
         plot(handles.axes1, dataset_values.n, dataset_values.x);
-        title('X');
+        title(handles.axes1, 'X');
 
-        plot(handles.axes2, dataset_values.n,dataset_values.y);
-        title('Y');
+        plot(handles.axes2, dataset_values.n, dataset_values.y);
+        title(handles.axes2, 'Y');
 
-        plot(handles.axes3, dataset_values.n,dataset_values.z);
-        title('Z');
+        plot(handles.axes3, dataset_values.n, dataset_values.z);
+        title(handles.axes3, 'Z');
 
 %         if (dataset_choice_i > 1)
 %             title(dataset_name);
