@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 05-Dec-2017 15:37:13
+% Last Modified by GUIDE v2.5 19-Dec-2017 15:01:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -54,12 +54,14 @@ function gui_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for gui
 handles.output = hObject;
 
-% Update handles structure
-guidata(hObject, handles);
-
 % UIWAIT makes gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
+handles.window_function = (@(M) M);
+handles.datasets = struct;
+
+% Update handles structure
+guidata(hObject, handles);
 
 % --- Outputs from this function are returned to the command line.
 function varargout = gui_OutputFcn(hObject, eventdata, handles) 
@@ -71,23 +73,30 @@ function varargout = gui_OutputFcn(hObject, eventdata, handles)
 % Get default command line output from handles structure
 varargout{1} = handles.output;
 
-
 % --- Executes on button press in load_button.
 function load_button_Callback(hObject, eventdata, handles)
 % hObject    handle to load_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-[ raw, filename ] = load_excel();
+[raw, filename] = load_excel();
 [~, ~, ds] = parse_excel(raw);
-values = general_values();
-values.datasets = ds;
-values.handles = handles;
 
-window_function = values.window_function;
-[plotted_datasets] = plot_graphs(ds, window_function, handles);
+handles.datasets = ds;
+
+% Update handles structure
+guidata(hObject, handles);
 
 set(handles.file_text, 'String', filename);
+reloadFile(handles);
+
+function reloadFile(handles)
+
+ds = handles.datasets;
+window_function = handles.window_function;
+
+[plotted_datasets] = plot_graphs(ds, window_function, handles);
 set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ', '));
+
 
 % --- Executes on button press in save_button.
 function save_button_Callback(hObject, eventdata, handles)
@@ -130,5 +139,7 @@ function window_button_Callback(hObject, eventdata, handles)
 % hObject    handle to window_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-values = general_values();
-values.window_function = choose_window_function();
+handles.window_function = choose_window_function();
+
+% Update handles structure
+guidata(hObject, handles);
