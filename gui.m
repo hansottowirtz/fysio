@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 19-Dec-2017 15:01:24
+% Last Modified by GUIDE v2.5 20-Dec-2017 01:45:00
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,9 +59,12 @@ handles.output = hObject;
 
 handles.window_function = (@(M) M);
 handles.datasets = struct;
+handles.plot_mode = "power";
 
 % Update handles structure
 guidata(hObject, handles);
+
+zoom on;
 
 % --- Outputs from this function are returned to the command line.
 function varargout = gui_OutputFcn(hObject, eventdata, handles) 
@@ -83,18 +86,23 @@ function load_button_Callback(hObject, eventdata, handles)
 
 handles.datasets = ds;
 
-% Update handles structure
+datasets_names = fieldnames(ds);
+
+dataset_choice_i = menu('Choose a dataset', datasets_names);
+chosen_dataset_name = datasets_names{dataset_choice_i};
+
+handles.plotted_dataset_values = ds.(chosen_dataset_name);
+set(handles.file_text, 'String', filename);
 guidata(hObject, handles);
 
-set(handles.file_text, 'String', filename);
 reloadFile(handles);
 
 function reloadFile(handles)
-
-ds = handles.datasets;
 window_function = handles.window_function;
+plot_mode = handles.plot_mode;
+plotted_dataset_values = handles.plotted_dataset_values;
 
-[plotted_datasets] = plot_graphs(ds, window_function, handles);
+[plotted_datasets] = plot_graphs(plotted_dataset_values, window_function, plot_mode, handles);
 set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ', '));
 
 
@@ -133,13 +141,25 @@ if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColo
     set(hObject,'BackgroundColor',[.9 .9 .9]);
 end
 
-
-% --- Executes on button press in window_button.
 function window_button_Callback(hObject, eventdata, handles)
-% hObject    handle to window_button (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 handles.window_function = choose_window_function();
-
-% Update handles structure
 guidata(hObject, handles);
+
+function zoom_mode_button_Callback(hObject, eventdata, handles)
+zoom on;
+
+function cursor_mode_button_Callback(hObject, eventdata, handles)
+datacursormode on;
+
+function power_plot_button_Callback(hObject, eventdata, handles)
+disp("power");
+handles.plot_mode = "power";
+guidata(hObject, handles);
+reloadFile(handles);
+
+
+function value_plot_button_Callback(hObject, eventdata, handles)
+disp("value");
+handles.plot_mode = "value";
+guidata(hObject, handles);
+reloadFile(handles);

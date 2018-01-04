@@ -1,49 +1,60 @@
-function [ plotted_datasets ] = plot_graphs( datasets, window_function, handles )
-
-    datasets_names = fieldnames(datasets);
-
-    datasets_choices = cat(1, 'All', datasets_names);
-    dataset_choice_i = menu('Choose a dataset', datasets_choices);
-    
+function [ plotted_datasets ] = plot_graphs( dataset_values, window_function, plot_mode, handles )
     plotted_datasets = {};
+    
+    value_names = ['x' 'y' 'z'];
+    
+    axes = struct;
+    axes.x = struct;
+    axes.x.time_axes = handles.axes1;
+    axes.x.spectrum_axes = handles.axes4;
+    axes.y = struct;
+    axes.y.time_axes = handles.axes2;
+    axes.y.spectrum_axes = handles.axes5;
+    axes.z = struct;
+    axes.z.time_axes = handles.axes3;
+    axes.z.spectrum_axes = handles.axes6;
 
-    for i = 1:length(datasets_names)
-        dataset_name = datasets_names{i};
-        if (dataset_choice_i > 1 && (i + 1) ~= dataset_choice_i)
-            continue;
+    hold off;
+    
+    disp(plot_mode);
+    
+    for j = 1:3
+        value_name = value_names(j);
+
+        % sampling values
+        % Ts = 0.001; % sampling period (for testing)
+        Ts = 1; % sampling period (one, as a new row is added every second)
+        fs = 1/Ts; % sampling frequency
+        ws = 2*pi*fs; % sampling angular frequency
+
+        % testing purposes: Peak at 1 and at 50
+        % t = 0:Ts:(5-Ts);
+        % x = sin(w*t)+sin(50*w*t);
+
+        t = 1:length(dataset_values.n); % every row
+        x = dataset_values.(value_name); % x, y or z
+
+        Xp = fft(x);
+        n = length(Xp);
+        Xp_abs = abs(Xp);
+        Xp_shifted = fftshift(Xp);
+        Xp_abs_shifted = fftshift(Xp_abs);
+        PSDp = Xp_abs.^2/n;
+        PSDp_shifted = fftshift(PSDp);
+
+        f = (0:n-1)*(fs/n);
+        f_shifted = (-n/2:n/2-1)*(fs/n);
+
+        plot(axes.(value_name).time_axes, t, x);
+        title(axes.(value_name).time_axes, upper(value_name));
+        xlabel(axes.(value_name).time_axes, 't [s]');
+
+        if plot_mode == "power"
+            plot(axes.(value_name).spectrum_axes, f_shifted, PSDp_shifted);
+        else
+            plot(axes.(value_name).spectrum_axes, f_shifted, Xp_abs_shifted);
         end
-        plotted_datasets{end+1} = dataset_name;
-        dataset_values = datasets.(dataset_name);
-        
-        t=0:0.01:200; A=sin(t);
-        
-
-        plot(handles.axes1, t, A);
-        title(handles.axes1, 'X');
-        
-        plot(handles.axes4, t, (fft(real(A))));
-        title(handles.axes4,'fft X');
-
-        plot(handles.axes2, dataset_values.n, dataset_values.y);
-        title(handles.axes2, 'Y');
-        
-        semilogx(handles.axes5, 0:length(dataset_values.n), (fft(real(dataset_values.y))));
-        title(handles.axes5,'fft Y');
-
-        plot(handles.axes3, dataset_values.n, dataset_values.z);
-        title(handles.axes3, 'Z');
-        
-        semilogx(handles.axes6, dataset_values.n, (fft(real(dataset_values.z))));
-        title(handles.axes6,'fft Z');
-        
-        hold on;
-
-%         if (dataset_choice_i > 1)
-%             title(dataset_name);
-%         else
-%             title('All');
-%         end
-         hold on
+        title(axes.(value_name).spectrum_axes, strcat("FFT ", upper(value_name)));
+        xlabel(axes.(value_name).spectrum_axes, 'f [Hz]');
     end
-     hold off
 end
