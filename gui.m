@@ -57,9 +57,10 @@ handles.output = hObject;
 % UIWAIT makes gui wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
-handles.window_function = (@(M) M);
+handles.window_function = 'boxcar';
 handles.datasets = struct;
-handles.plot_mode = "power";
+handles.plot_mode = 'power';
+handles.cutoff_ratio = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -82,9 +83,10 @@ function load_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 [raw, filename] = load_excel();
-[~, ~, ds] = parse_excel(raw);
+[~, frequency, ds] = parse_excel(raw);
 
 handles.datasets = ds;
+handles.frequency = frequency;
 
 datasets_names = fieldnames(ds);
 
@@ -98,11 +100,16 @@ guidata(hObject, handles);
 reloadFile(handles);
 
 function reloadFile(handles)
+if (~isfield(handles,'plotted_dataset_values'))
+    return;
+end
 window_function = handles.window_function;
 plot_mode = handles.plot_mode;
 plotted_dataset_values = handles.plotted_dataset_values;
+frequency = handles.frequency;
+cutoff_ratio = handles.cutoff_ratio;
 
-[plotted_datasets] = plot_graphs(plotted_dataset_values, window_function, plot_mode, handles);
+[plotted_datasets] = plot_graphs(plotted_dataset_values, window_function, frequency, plot_mode, cutoff_ratio, handles);
 set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ', '));
 
 
@@ -125,6 +132,10 @@ function frequency_slider_Callback(hObject, eventdata, handles)
 % hObject    handle to frequency_slider (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+num = get(hObject, 'Value');
+handles.cutoff_ratio = num;
+guidata(hObject, handles);
+reloadFile(handles);
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
@@ -144,6 +155,7 @@ end
 function window_button_Callback(hObject, eventdata, handles)
 handles.window_function = choose_window_function();
 guidata(hObject, handles);
+reloadFile(handles);
 
 function zoom_mode_button_Callback(hObject, eventdata, handles)
 zoom on;
@@ -152,14 +164,12 @@ function cursor_mode_button_Callback(hObject, eventdata, handles)
 datacursormode on;
 
 function power_plot_button_Callback(hObject, eventdata, handles)
-disp("power");
-handles.plot_mode = "power";
+handles.plot_mode = 'power';
 guidata(hObject, handles);
 reloadFile(handles);
 
 
 function value_plot_button_Callback(hObject, eventdata, handles)
-disp("value");
-handles.plot_mode = "value";
+handles.plot_mode = 'value';
 guidata(hObject, handles);
 reloadFile(handles);
