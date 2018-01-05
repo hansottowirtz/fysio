@@ -1,4 +1,4 @@
-function [ plotted_datasets ] = plot_graphs( dataset_values, window_function, frequency, plot_mode, cutoff_ratio, handles )
+function [ plotted_datasets ] = plot_graphs( dataset_values, window_function, frequency, plot_mode, td_plot_mode, cutoff_ratio, handles )
     plotted_datasets = {};
         
     value_names = ['x' 'y' 'z'];
@@ -15,6 +15,8 @@ function [ plotted_datasets ] = plot_graphs( dataset_values, window_function, fr
     axes.z.spectrum_axes = handles.axes6;
 
     hold off;
+    
+    plot_both = 1;
         
     for j = 1:3
         value_name = value_names(j);
@@ -60,7 +62,7 @@ function [ plotted_datasets ] = plot_graphs( dataset_values, window_function, fr
         cutoff_boxcar = [flipud(half_boxcar); half_boxcar];
                 
         half_boxcar_no_zp = ones(n_no_zp/2, 1);
-        half_boxcar_no_zp(ceil(((n_no_zp/2)*(1 - cutoff_ratio)) + 1):end) = 0;
+        half_boxcar_no_zp(ceil(((n_no_zp/2)*(1 - cutoff_ratio)) + 2):end) = 0;
         cutoff_boxcar_no_zp = [flipud(half_boxcar_no_zp); half_boxcar_no_zp];
         
         Xp_shifted_cutoff = Xp_shifted .* cutoff_boxcar;
@@ -73,11 +75,24 @@ function [ plotted_datasets ] = plot_graphs( dataset_values, window_function, fr
         f = (0:n-1)*(fs/n)*frequency;
         f_shifted = (-n/2:n/2-1)*(fs/n)*frequency;
         
-        plot(relevant_axes.time_axes, t, x_cutoff);
+        if strcmp(td_plot_mode, 'both') || strcmp(td_plot_mode, 'original')
+            plot(relevant_axes.time_axes, t, x, 'r');
+        end
+        
+        if strcmp(td_plot_mode, 'both')
+           hold(relevant_axes.time_axes, 'on'); 
+        end
+        
+        if strcmp(td_plot_mode, 'both') || strcmp(td_plot_mode, 'cutoff')
+            plot(relevant_axes.time_axes, t, x_cutoff);
+        end
+        
+        hold(relevant_axes.time_axes, 'off');
+        
         title(relevant_axes.time_axes, upper(value_name));
         xlabel(relevant_axes.time_axes, 't [s]');
         
-        if plot_mode == 'power'
+        if strcmp(plot_mode, 'power')
             plot(relevant_axes.spectrum_axes, f_shifted, PSDp_shifted_cutoff);
         else
             plot(relevant_axes.spectrum_axes, f_shifted, Xp_abs_shifted_cutoff);

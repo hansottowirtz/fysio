@@ -61,6 +61,7 @@ handles.window_function = 'boxcar';
 handles.datasets = struct;
 handles.plot_mode = 'power';
 handles.cutoff_ratio = 0;
+handles.td_plot_mode = 'both';
 
 % Update handles structure
 guidata(hObject, handles);
@@ -111,9 +112,10 @@ plot_mode = handles.plot_mode;
 plotted_dataset_values = handles.plotted_dataset_values;
 frequency = handles.frequency;
 cutoff_ratio = handles.cutoff_ratio;
+td_plot_mode = handles.td_plot_mode;
 set(handles.cutoff_frequency_text, 'String', strjoin({num2str(frequency * (1 - cutoff_ratio)), 'Hz'}));
 
-plot_graphs(plotted_dataset_values, window_function, frequency, plot_mode, cutoff_ratio, handles);
+plot_graphs(plotted_dataset_values, window_function, frequency, plot_mode, td_plot_mode, cutoff_ratio, handles);
 
 
 % --- Executes on button press in save_button.
@@ -121,14 +123,6 @@ function save_button_Callback(hObject, eventdata, handles)
 % hObject    handle to save_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in options_button.
-function options_button_Callback(hObject, eventdata, handles)
-% hObject    handle to options_button (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
 
 % --- Executes on slider movement.
 function frequency_slider_Callback(hObject, eventdata, handles)
@@ -172,8 +166,22 @@ handles.plot_mode = 'power';
 guidata(hObject, handles);
 reloadFile(handles);
 
-
 function value_plot_button_Callback(hObject, eventdata, handles)
 handles.plot_mode = 'value';
+guidata(hObject, handles);
+reloadFile(handles);
+
+function td_original_button_Callback(hObject, eventdata, handles)
+handles.td_plot_mode = 'original';
+guidata(hObject, handles);
+reloadFile(handles);
+
+function td_cutoff_button_Callback(hObject, eventdata, handles)
+handles.td_plot_mode = 'cutoff';
+guidata(hObject, handles);
+reloadFile(handles);
+
+function td_both_button_Callback(hObject, eventdata, handles)
+handles.td_plot_mode = 'both';
 guidata(hObject, handles);
 reloadFile(handles);
