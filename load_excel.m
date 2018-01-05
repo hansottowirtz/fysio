@@ -1,5 +1,9 @@
 function [ raw, filename ] = load_excel()
     [filename,pathname] = uigetfile('*.xlsx');
-    raw = read_excel(pathname, filename);
+    if filename == 0
+        raw = 0;
+    else
+        raw = read_excel(pathname, filename);
+    end
 end
 

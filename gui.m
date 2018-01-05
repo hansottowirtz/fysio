@@ -83,6 +83,9 @@ function load_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 [raw, filename] = load_excel();
+if ~(filename ~= 0)
+    return;
+end
 [~, frequency, ds] = parse_excel(raw);
 
 handles.datasets = ds;
@@ -108,9 +111,9 @@ plot_mode = handles.plot_mode;
 plotted_dataset_values = handles.plotted_dataset_values;
 frequency = handles.frequency;
 cutoff_ratio = handles.cutoff_ratio;
+set(handles.cutoff_frequency_text, 'String', strjoin({num2str(frequency * (1 - cutoff_ratio)), 'Hz'}));
 
-[plotted_datasets] = plot_graphs(plotted_dataset_values, window_function, frequency, plot_mode, cutoff_ratio, handles);
-set(handles.datasets_list_text, 'String', strjoin(plotted_datasets, ', '));
+plot_graphs(plotted_dataset_values, window_function, frequency, plot_mode, cutoff_ratio, handles);
 
 
 % --- Executes on button press in save_button.
@@ -133,7 +136,8 @@ function frequency_slider_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 num = get(hObject, 'Value');
-handles.cutoff_ratio = num;
+log_ratio = tanh(2*num)/tanh(2);
+handles.cutoff_ratio = log_ratio;
 guidata(hObject, handles);
 reloadFile(handles);
 
