@@ -17,7 +17,7 @@ Deze functie kan dus gebruikt worden om noise, die zich in de hoge frequenties b
 Om de originele functie te kunnen vergelijken met de bewerkte functie, kan u rechts een keuze maken tussen drie weergaven van het tijdsdomein.
 Als u "Original" kiest, zullen de drie linkse grafieken steeds de originele functie laten zien.
 Als u "Cut-off" kiest, zullen de drie linkse grafieken steeds de bewerkte functie laten zien.
-Als u "Both" kiest, zullen de drie linkse grafieken beide grafieken op elkaar laten zien, de originel functie in het rood en de bewerkte functie in het blauw.
+Als u "Both" kiest, zullen de drie linkse grafieken beide grafieken op elkaar laten zien, de originele functie in het rood en de bewerkte functie in het blauw.
 Onder de frequentie slider kan u de keuze maken welke mode u wil gebruiken om de functies te bekijken.
 Met mode "Zoom" kan u inzoomen op elke functie.
 Met mode "Cursor" kan u een cursor plaatsen op elke functie en de bijhorende waarden aflezen.
