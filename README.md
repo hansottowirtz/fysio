@@ -35,7 +35,7 @@ Uiteindelijk, helemaal links onderaan kan u 1 van 8 window functies selecteren.
 
 ### Opmerkingen
 
-Om het spectrum gegenereren gebeuren de volgende stappen:
+Om het spectrum te genereren gebeuren de volgende stappen:
 
   - Van het signaal wordt het gemiddelde afgetrokken. (`detrend`)
   - De window wordt toegepast op het signaal.
